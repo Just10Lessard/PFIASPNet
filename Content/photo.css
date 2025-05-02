@@ -76,7 +76,7 @@
 
 .likesSummary {
     display: grid;
-    grid-template-columns: 60px 30px;
+    grid-template-columns: 88px 30px 30px 30px;
     align-items: center;
     text-align: right;
 }
@@ -85,7 +85,7 @@
     font-size: 1em !important;
     color: dodgerblue;
     display: grid;
-    grid-template-columns: auto 95px;
+    grid-template-columns: auto 180px;
     align-items: center;
 }
 
@@ -93,7 +93,7 @@
     color: dodgerblue;
     margin: 5px;
     display: grid;
-    grid-template-columns: auto 95px;
+    grid-template-columns: auto 180px;
     align-items: center;
 }
 

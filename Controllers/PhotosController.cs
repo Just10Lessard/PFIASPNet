@@ -14,6 +14,27 @@ namespace PhotosManager.Controllers
     {
         const string IllegalAccessUrl = "/Accounts/Login?message=Tentative d'accès illégal!&success=false";
 
+        public ActionResult Comments(int photoId, int parentId = 0)
+        {
+            List<Comment> comments = DB.Comments.ToList().Where(c => c.PhotoId == photoId && c.ParentId == parentId).ToList();
+            return PartialView("RenderComments", comments);
+
+        }
+
+        public ActionResult GetComments(bool forceRefresh = false)
+        {
+            if (Session["currentPhotoId"] != null)
+            {
+                int photoId = (int)Session["currentPhotoId"];
+                if (forceRefresh || true) // always refresh
+                {
+                    List<Comment> comments = DB.Comments.ToList().Where(c => c.PhotoId == photoId && c.ParentId == 0).ToList();
+                    return PartialView("RenderComments", comments);
+                }
+            }
+            return null;
+        }
+
         public ActionResult SetPhotoOwnerSearchId(int id)
         {
             Session["photoOwnerSearchId"] = id;

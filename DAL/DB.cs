@@ -23,6 +23,9 @@ namespace PhotosManager.Models
         static public PhotosRepository Photos { get; set; }
             = new PhotosRepository();
 
+        static public CommentsRepository Comments { get; set; }
+            = new CommentsRepository();
+
         static public LikesRepository Likes { get; set; }
            = new LikesRepository();
 

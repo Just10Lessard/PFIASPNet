@@ -7,7 +7,16 @@
     
 }
 <div id="header">
-    <img src="/Content/UI-Images/PhotoCloudLogo.png" class="appLogo" alt="" title="Gestionnaire de photos">
+    @if (action == "details")
+    {
+        <a href="/@controller/List">
+            <img src="/Content/UI-Images/PhotoCloudLogo.png" class="appLogo" alt="" title="Gestionnaire de photos">
+        </a>
+    }
+    else
+    {
+        <img src="/Content/UI-Images/PhotoCloudLogo.png" class="appLogo" alt="" title="Gestionnaire de photos">
+    }
 
     @switch (action)
     {
@@ -64,7 +73,7 @@
         case "details":
             <div class="actionTitle">Détails </div>
             <div class="menu-icon-layout">
-                @if (connected && (Session["IsOwner"]!=null?(bool)Session["IsOwner"]:false))
+                @if (connected && (Session["IsOwner"] != null ? (bool)Session["IsOwner"] : false))
                 {
                     <a href="/@controller/Edit" class="cmdIcon fa fa-edit" title="Modifier"></a>
                     <i class="cmdIcon fa fa-trash"

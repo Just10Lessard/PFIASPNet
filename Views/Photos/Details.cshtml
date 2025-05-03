@@ -49,7 +49,7 @@
 <details open style="position:relative; top:-40px;" id="commentDetails">
     <summary style="border: none; background: none; "></summary>
     <!-- All comments rendering -->
-    <div class="commentsSection" id="commentsSection"> <!-- auto refreshed --> </div>
+    <div class="commentsSection" id="commentsSection"> <!-- auto refreshed -->  <!--Html.Partial("RenderComments", Model.Comments) avec le arobas--></div>
     <!-- Hidden programmatically new comment UI -->
     <div class="newCommentLayout" photoId="@currentPhotoId" createCommentparentId="0">
         <div class="UserSmallAvatar" style="background-image:url('@user.Avatar')" title="@user.Name"></div>
@@ -65,3 +65,39 @@
     </div>
 </details>
 
+@section Scripts {
+    <script>
+        $(() => {
+
+            detailsPanel = new AutoRefreshedPanel("DetailsPanel", "/Photos/GetDetails", 5, detailsPanelAttachEvents);
+            commentsSection = new AutoRefreshedPanel("commentsSection", "/Photos/GetComments", 5, commentsSectionAttachEvents);
+        })
+        function commentsSectionAttachEvents() {
+
+            $(".abortEditCommentCmd").off();
+            $(".abortEditCommentCmd").click(function (event) {
+                event.preventDefault();
+                commentsSection.restart();
+                let id = $(this).attr("cmdCommentId");
+                $("#" + id).hide();
+                $("[commentId=" + id + "]").show();
+            })
+            $(".updateCommentCmd").off();
+            $(".updateCommentCmd").click(function (event) {
+                event.preventDefault();
+                let commentId = $(this).attr("cmdCommentId");
+                let commentText = $(this).parent().parent().find("textarea").val();
+                commentsSection.postCommand("/Photos/UpdateComment", { commentId, commentText });
+                commentsSection.restart();
+            })
+            $(".deleteCommentCmd").off()
+            $(".deleteCommentCmd").click(function (event) {
+                event.preventDefault();
+                commentsSection.pause();
+                let commentId = $(this).attr("cmdCommentId");
+                commentsSection.confirmedCommand("Effacer?", `/Photos/DeleteComment?id=${commentId}`);
+                commentsSection.restart();
+            })
+        }
+    </script>
+}

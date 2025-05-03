@@ -10,7 +10,7 @@ namespace PhotosManager.Models
         public int Id { get; set; }
         public int UserId { get; set; }
         public int PhotoId { get; set; }
-        public int commentId { get; set; }
+        public int CommentId { get; set; }
         public DateTime CreationDate { get; set; }
 
         public Like()

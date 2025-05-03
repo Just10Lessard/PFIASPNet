@@ -35,6 +35,19 @@ namespace PhotosManager.Controllers
             return null;
         }
 
+        [HttpPost]
+        public ActionResult UpdateComment(int commentId, string commentText)
+        {
+            User connectedUser = ((User)Session["ConnectedUser"]);
+            Comment comment = DB.Comments.Get(commentId);
+            if (comment != null && comment.OwnerId == connectedUser.Id)
+            {
+                comment.Text = commentText;
+                DB.Comments.Update(comment);
+            }
+            return null;
+        }
+
         public ActionResult SetPhotoOwnerSearchId(int id)
         {
             Session["photoOwnerSearchId"] = id;
@@ -115,9 +128,15 @@ namespace PhotosManager.Controllers
                 User connectedUser = ((User)Session["ConnectedUser"]);
                 Session["IsOwner"] = connectedUser.IsAdmin || photo.OwnerId == connectedUser.Id;    
                 if ((bool)Session["IsOwner"] || photo.Shared)
+                {
+                    ViewBag.Comments = DB.Comments.ToList().Where(c => c.PhotoId == id && c.ParentId == 0).ToList();
+
                     return View(photo);
+                }
                 else
+                {
                     return Redirect(IllegalAccessUrl);
+                }
             }
             return Redirect(IllegalAccessUrl);
         }

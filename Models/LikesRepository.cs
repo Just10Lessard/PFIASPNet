@@ -38,5 +38,27 @@ namespace PhotosManager.Models
             List<Like> list = ToList().Where(l => l.UserId == userId).ToList();
             list.ForEach(l => Delete(l.Id));
         }
+
+        public void ToggleCommentLike(int commentId, int userId)
+        {
+            Like like = ToList().Where(l => (l.CommentId == commentId && l.UserId == userId)).FirstOrDefault();
+            Comment comment = DB.Comments.Get(commentId);
+            if (like == null)
+            {
+                BeginTransaction();
+                DB.Comments.Update(comment);
+                like = new Like { CommentId = commentId, UserId = userId };
+                Add(like);
+                EndTransaction();
+            }
+            else
+            {
+                BeginTransaction();
+                DB.Comments.Update(comment);
+                Delete(like.Id);
+                EndTransaction();
+            }
+        }
+
     }
 }

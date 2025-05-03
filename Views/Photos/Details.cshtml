@@ -6,6 +6,10 @@
 
     bool userLike = PhotosManager.Models.DB.Likes.ToList().Exists(l => (l.PhotoId == Model.Id && l.UserId == userId));
 
+    bool userComment = PhotosManager.Models.DB.Comments.ToList().Exists(l => (l.PhotoId == Model.Id && l.OwnerId == userId));
+
+    string photoCommentedUser = userComment ? "fa" : "fa-regular";
+
     string photoLikedByConnectedUser = userLike ? "fa" : "fa-regular";
 
     int currentPhotoId = (int)Session["currentPhotoId"];
@@ -25,7 +29,7 @@
         @Helper.When(Model.CreationDate, true)
         <div class="likesSummary">
             @Model.Comments.Count()
-            <i class="cmdIconSmall fa-regular fa-comment" title="@Model.CommentsUserList"></i>
+            <i class="cmdIconSmall @photoCommentedUser fa-comment" title="@Model.CommentsUserList"></i>
             @Model.Likes.Count()
             <a href="/Photos/TogglePhotoLike/@Model.Id"
                style="text-decoration:none; font-size:1.1em"
@@ -97,26 +101,74 @@
                 event.preventDefault();
                 commentsSection.pause();
                 let commentId = $(this).attr("cmdCommentId");
-                commentsSection.confirmedCommand("Effacer?", `/Photos/DeleteComment?id=${commentId}`);
+                commentsSection.confirmedCommand("Effacer?", `/Photos/DeleteComment?id=${commentId}`); //Donne internal serveur error 500...
                 commentsSection.restart();
             })
 
             $(".createCommentCmd").off();
             $(".createCommentCmd").click(function (event) {
                 event.preventDefault();
-                console.log("Clicked!");
                 let parentId = $(this).attr("parentId");
                 let photoId = $(".newCommentLayout").attr("photoId");
-                let commentText = $(this).closest(".newCommentLayout").find("textarea").val();
-
+                let commentTextArea = $(this).closest(".newCommentLayout").find("textarea");
+                let commentText = commentTextArea.val();
                 commentsSection.postCommand("/Photos/CreateComment", { photoId, parentId, commentText });
+                commentTextArea.val("");
                 commentsSection.restart();
             });
+
             $(".newCommentCmd").off();
             $(".newCommentCmd").click(function (event) {
                 event.preventDefault();
 
                 $(".newCommentLayout").show(); //https://www.w3schools.com/jquery/jquery_hide_show.asp
+
+            });
+            $(".abortCreateCommentCmd").off();
+            $(".abortCreateCommentCmd").click(function (event) {
+                event.preventDefault();
+
+                $(".newCommentLayout").hide();
+
+            });
+
+            $(".createResponseCmd").off();
+            $(".createResponseCmd").click(function (event) {
+                event.preventDefault();
+
+                let parentId = $(this).attr("parentId");
+                let photoId = $(".responseLayout").attr("photoId");
+                let commentText = $(this).closest(".responseLayout").find("textarea").val();
+
+                commentsSection.postCommand("/Photos/CreateComment", { photoId, parentId, commentText });
+                commentsSection.restart();
+            });
+            $(".CreateResponseCommentCmd").off();
+            $(".CreateResponseCommentCmd").click(function (event) {
+                event.preventDefault();
+
+                $(".responseLayout").show();
+
+            });
+            $(".abortCreateResponseCmd").off();
+            $(".abortCreateResponseCmd").click(function (event) {
+                event.preventDefault();
+
+                $(".responseLayout").hide();
+
+            });
+            $(".editCommentCmd").off();
+            $(".editCommentCmd").click(function (event) {
+                event.preventDefault();
+
+                $(".editCommentLayout").hide();
+
+                $(".commentLayout").show();
+
+                let commentId = $(this).attr("commentId");
+
+                $('.editCommentLayout#' + commentId).css("display", "grid");
+                $('.commentLayout[commentId="' + commentId + '"]').hide();
 
             });
         }

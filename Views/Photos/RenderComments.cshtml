@@ -12,6 +12,7 @@
         {
             currentCommentId = comment.Id;
             bool userLike = PhotosManager.Models.DB.Likes.ToList().Exists(l => (l.CommentId == comment.Id && l.UserId == user.Id));
+
             string commentLikedByConnectedUser = userLike ? "fa" : "fa-regular";
 
             <!-- Comment rendering -->
@@ -25,7 +26,7 @@
                     @Helper.When(comment.CreationDate)
                     <div class="commentSubFooter">
                         @comment.Likes.Count()
-                        <i class="cmdIconSmall @commentLikedByConnectedUser fa-thumbs-up" title="@comment.UsersLikesList" commentId="@comment.Id"></i>
+                        <a href="/Photos/ToggleCommentLike/@comment.Id" class="cmdIconSmall @commentLikedByConnectedUser fa-thumbs-up"title="@comment.UsersLikesList"></a>
                         <!-- Only owner can edit this comment -->
                         @if (comment.OwnerId == user.Id)
                         {
@@ -43,7 +44,7 @@
             if (comment.OwnerId == user.Id)
             {
                 <!-- Hidden programmatically edit comment UI -->
-                <div class="editCommentLayout" id="@comment.Id" userId="@user.Id" ownerId="@comment.OwnerId">
+                <div class="editCommentLayout" id="@comment.Id" userId="@user.Id" ownerId="@comment.OwnerId" style="display:none">
 
                     <div class="UserSmallAvatar" style="background-image:url('@comment.Owner.Avatar')" title="@comment.Owner.Name"></div>
                     <textarea class="form-control" rows="1" placeholder="répondre">@comment.Text</textarea>

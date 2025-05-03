@@ -65,6 +65,25 @@ namespace PhotosManager.Controllers
             return null;
         }
 
+
+        public ActionResult DeleteComment(int commentId)
+        {
+            User connectedUser = ((User)Session["ConnectedUser"]);
+            Comment comment = DB.Comments.Get(commentId);
+            if (comment != null)
+            {
+                DB.Comments.DeleteCommentAndBelow(commentId);
+            }
+            return null;
+        }
+
+        public ActionResult ToggleCommentLike(int id)
+        {
+            User connectedUser = (User)Session["ConnectedUser"];
+            DB.Likes.ToggleCommentLike(id, connectedUser.Id);
+            return RedirectToAction("Details", new { id = Session["currentPhotoId"] });
+        }
+
         public ActionResult SetPhotoOwnerSearchId(int id)
         {
             Session["photoOwnerSearchId"] = id;

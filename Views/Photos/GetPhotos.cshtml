@@ -9,8 +9,10 @@
         if (connectedUser.IsAdmin || photo.Shared || photo.OwnerId == connectedUser.Id)
         {
             bool userLike = PhotosManager.Models.DB.Likes.ToList().Exists(l => (l.PhotoId == photo.Id && l.UserId == connectedUser.Id));
+            bool userComment = PhotosManager.Models.DB.Comments.ToList().Exists(l => (l.PhotoId == photo.Id && l.OwnerId == connectedUser.Id));
 
             string photoLikedByConnectedUser = userLike ? "fa" : "fa-regular";
+            string photoCommentUser = userComment ? "fa" : "fa-regular";
 
             bool writeAccess = connectedUser.IsAdmin || photo.OwnerId == connectedUser.Id;
             <div class="photoLayout">
@@ -28,6 +30,8 @@
                     <div class="photoCreationDate">
                         @Helper.When(photo.CreationDate)
                         <div class="likesSummary">
+                            @photo.Comments.Count()
+                            <i class="cmdIconSmall @photoCommentUser fa-comment" title="@photo.CommentsUserList"></i>
                             @photo.Likes.Count()
                             <i class="cmdIconSmall @photoLikedByConnectedUser fa-thumbs-up" title="@photo.UsersLikesList"></i>
                         </div>

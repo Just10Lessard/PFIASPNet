@@ -28,7 +28,7 @@ namespace PhotosManager.Models
         }
 
         [JsonIgnore]
-        public List<Like> Likes => DB.Likes.ToList().Where(l => l.PhotoId == Id).ToList();
+        public List<Like> Likes => DB.Likes.ToList().Where(l => l.CommentId == Id).ToList();
 
         [JsonIgnore]
         public string UsersLikesList

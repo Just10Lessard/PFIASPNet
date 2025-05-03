@@ -36,6 +36,23 @@ namespace PhotosManager.Controllers
         }
 
         [HttpPost]
+        public ActionResult CreateComment(int photoId, int parentId, string commentText)
+        {
+            User connectedUser = (User)Session["ConnectedUser"];
+            Comment newComment = new Comment
+            {
+                PhotoId = photoId,
+                ParentId = parentId,
+                Text = commentText,
+                OwnerId = connectedUser.Id,
+                CreationDate = DateTime.Now
+            };
+            DB.Comments.Add(newComment);
+            return null;
+        }
+
+
+        [HttpPost]
         public ActionResult UpdateComment(int commentId, string commentText)
         {
             User connectedUser = ((User)Session["ConnectedUser"]);
@@ -125,6 +142,7 @@ namespace PhotosManager.Controllers
             if (photo != null)
             {
                 Session["id"] = id;
+                Session["currentPhotoId"] = id;
                 User connectedUser = ((User)Session["ConnectedUser"]);
                 Session["IsOwner"] = connectedUser.IsAdmin || photo.OwnerId == connectedUser.Id;    
                 if ((bool)Session["IsOwner"] || photo.Shared)

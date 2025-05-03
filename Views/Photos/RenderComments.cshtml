@@ -5,6 +5,7 @@
     int currentCommentId = 0;
 }
 <div class="commentsLayout">
+
     @if (Model.Count() > 0)
     {
         foreach (var comment in Model)
@@ -26,7 +27,7 @@
                         @comment.Likes.Count()
                         <i class="cmdIconSmall @commentLikedByConnectedUser fa-thumbs-up" title="@comment.UsersLikesList" commentId="@comment.Id"></i>
                         <!-- Only owner can edit this comment -->
-                        @if (comment.Owner.Id == user.Id)
+                        @if (comment.OwnerId == user.Id)
                         {
                             <!-- Edit comment command icon -->
                             <i class="editCommentCmd cmdIconSmall fa fa-edit" commentId="@comment.Id"></i>
@@ -39,10 +40,10 @@
             </div>
 
             <!-- Only owner can edit this comment -->
-            if (comment.Owner.Id == user.Id)
+            if (comment.OwnerId == user.Id)
             {
                 <!-- Hidden programmatically edit comment UI -->
-                <div class="editCommentLayout" id="@comment.Id" userId="@user.Id" ownerId="@comment.Owner.Id">
+                <div class="editCommentLayout" id="@comment.Id" userId="@user.Id" ownerId="@comment.OwnerId">
 
                     <div class="UserSmallAvatar" style="background-image:url('@comment.Owner.Avatar')" title="@comment.Owner.Name"></div>
                     <textarea class="form-control" rows="1" placeholder="répondre">@comment.Text</textarea>

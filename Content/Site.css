@@ -411,3 +411,29 @@ fieldset {
     cursor: pointer;
     text-decoration: none;
 }
+
+.commentsLayout {
+    padding-left: 50px;
+}
+
+.commentLayout {
+    display: grid;
+    grid-template-columns: 50px auto;
+    align-items: flex-start;
+    margin: 8px;
+}
+
+.textComment {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin: 3px;
+    min-height: 40px;
+    padding: 6px;
+}
+
+.editCommentLayout {
+    display: grid;
+    grid-template-columns: 50px auto;
+    align-items: flex-start;
+    margin: 8px;
+}

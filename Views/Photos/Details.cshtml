@@ -8,7 +8,7 @@
 
     string photoLikedByConnectedUser = userLike ? "fa" : "fa-regular";
 
-    int currentPhotoId = Model.Id;     //(int)Session["currentPhotoId"]; le prof veut faire session mais je Model.id pour le moment
+    int currentPhotoId = (int)Session["currentPhotoId"];
     var user = ((PhotosManager.Models.User)Session["ConnectedUser"]);
 
 }
@@ -49,9 +49,9 @@
 <details open style="position:relative; top:-40px;" id="commentDetails">
     <summary style="border: none; background: none; "></summary>
     <!-- All comments rendering -->
-    <div class="commentsSection" id="commentsSection"> <!-- auto refreshed -->  <!--Html.Partial("RenderComments", Model.Comments) avec le arobas--></div>
+    <div class="commentsSection" id="commentsSection"> <!-- auto refreshed -->  @Html.Action("Comments", "Photos", new { photoId = currentPhotoId, parentId = 0 })</div>
     <!-- Hidden programmatically new comment UI -->
-    <div class="newCommentLayout" photoId="@currentPhotoId" createCommentparentId="0">
+    <div class="newCommentLayout" photoId="@currentPhotoId" createCommentparentId="0" style="display:none;">
         <div class="UserSmallAvatar" style="background-image:url('@user.Avatar')" title="@user.Name"></div>
 <textarea class="form-control" rows="1" placeholder="commenter"></textarea>
         <div></div>
@@ -65,11 +65,13 @@
     </div>
 </details>
 
+
 @section Scripts {
     <script>
+
         $(() => {
 
-            detailsPanel = new AutoRefreshedPanel("DetailsPanel", "/Photos/GetDetails", 5, detailsPanelAttachEvents);
+            //detailsPanel = new AutoRefreshedPanel("DetailsPanel", "/Photos/GetDetails", 5, detailsPanelAttachEvents);
             commentsSection = new AutoRefreshedPanel("commentsSection", "/Photos/GetComments", 5, commentsSectionAttachEvents);
         })
         function commentsSectionAttachEvents() {
@@ -98,6 +100,25 @@
                 commentsSection.confirmedCommand("Effacer?", `/Photos/DeleteComment?id=${commentId}`);
                 commentsSection.restart();
             })
+
+            $(".createCommentCmd").off();
+            $(".createCommentCmd").click(function (event) {
+                event.preventDefault();
+                console.log("Clicked!");
+                let parentId = $(this).attr("parentId");
+                let photoId = $(".newCommentLayout").attr("photoId");
+                let commentText = $(this).closest(".newCommentLayout").find("textarea").val();
+
+                commentsSection.postCommand("/Photos/CreateComment", { photoId, parentId, commentText });
+                commentsSection.restart();
+            });
+            $(".newCommentCmd").off();
+            $(".newCommentCmd").click(function (event) {
+                event.preventDefault();
+
+                $(".newCommentLayout").show(); //https://www.w3schools.com/jquery/jquery_hide_show.asp
+
+            });
         }
     </script>
 }

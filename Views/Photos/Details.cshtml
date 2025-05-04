@@ -118,9 +118,10 @@
             $(".CreateResponseCommentCmd").click(function (event) {
                 event.preventDefault();
 
-                $(".responseLayout").show();
-
+                let parentId = $(this).attr("parentId");
+                $(`.responseLayout[createResponseparentId="${parentId}"]`).show();
             });
+
             $(".abortCreateResponseCmd").off();
             $(".abortCreateResponseCmd").click(function (event) {
                 event.preventDefault();

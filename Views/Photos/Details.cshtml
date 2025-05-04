@@ -4,13 +4,6 @@
 
     int userId = ((PhotosManager.Models.User)Session["ConnectedUser"]).Id;
 
-    bool userLike = PhotosManager.Models.DB.Likes.ToList().Exists(l => (l.PhotoId == Model.Id && l.UserId == userId));
-
-    bool userComment = PhotosManager.Models.DB.Comments.ToList().Exists(l => (l.PhotoId == Model.Id && l.OwnerId == userId));
-
-    string photoCommentedUser = userComment ? "fa" : "fa-regular";
-
-    string photoLikedByConnectedUser = userLike ? "fa" : "fa-regular";
 
     int currentPhotoId = (int)Session["currentPhotoId"];
     var user = ((PhotosManager.Models.User)Session["ConnectedUser"]);
@@ -18,30 +11,8 @@
 }
 
 <div class="content">
-    <div class="photoDetailsOwner">
-        <div class="UserSmallAvatar" style="background-image:url('@Model.Owner.Avatar')" title="@Model.Owner.Name"></div>
-        @Model.Owner.Name
-    </div>
-    <hr>
-    <div class="photoDetailsTitle">@Model.Title</div>
-    <img src="@Model.Image" class="photoDetailsLargeImage">
-    <div class="photoDetailsCreationDate">
-        @Helper.When(Model.CreationDate, true)
-        <div class="likesSummary">
-            @Model.Comments.Count()
-            <i class="cmdIconSmall @photoCommentedUser fa-comment" title="@Model.CommentsUserList"></i>
-            @Model.Likes.Count()
-            <a href="/Photos/TogglePhotoLike/@Model.Id"
-               style="text-decoration:none; font-size:1.1em"
-               class="cmdIconSmall @photoLikedByConnectedUser fa-thumbs-up"
-               id="addRemoveLikeCmd"
-               title="@Html.Raw(Model.UsersLikesList)">
-            </a>
-        </div>
-        <div class="photoDetailsDescription">@Model.Description</div>
-    </div>
 </div>
-<div id="DetailsPanel"> <!-- Auto refreshed --></div>
+<div id="DetailsPanel"> @Html.Action("GetDetails", "Photos")</div>
 <hr />
 <!-- Create new comment command icon -->
 <div class="commentFooter ">
@@ -75,8 +46,8 @@
 
         $(() => {
 
-            //detailsPanel = new AutoRefreshedPanel("DetailsPanel", "/Photos/GetDetails", 5, detailsPanelAttachEvents);
-            commentsSection = new AutoRefreshedPanel("commentsSection", "/Photos/GetComments", 5, commentsSectionAttachEvents);
+            detailsPanel = new AutoRefreshedPanel("DetailsPanel", "/Photos/GetDetails", 5, detailsPanelAttachEvents);
+            commentsSection = new AutoRefreshedPanel("commentsSection", "/Photos/GetComments", 100000, commentsSectionAttachEvents);
         })
         function commentsSectionAttachEvents() {
 
@@ -171,6 +142,11 @@
                 $('.commentLayout[commentId="' + commentId + '"]').hide();
 
             });
+        }
+
+        function detailsPanelAttachEvents() {
+            event.preventDefault();
+            detailsPanel.restart();
         }
     </script>
 }

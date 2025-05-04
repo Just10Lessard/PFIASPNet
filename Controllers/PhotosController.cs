@@ -35,6 +35,22 @@ namespace PhotosManager.Controllers
             return null;
         }
 
+        public ActionResult GetDetails(bool forceRefresh = false)
+        {
+            if (Session["currentPhotoId"] != null)
+            {
+                int photoId = (int)Session["currentPhotoId"];
+                if (forceRefresh || true) // always refresh
+                {
+                    Photo photo = DB.Photos.Get(photoId);
+                    return PartialView("GetDetails", photo);
+                }
+            }
+            return null;
+        }
+
+
+
         [HttpPost]
         public ActionResult CreateComment(int photoId, int parentId, string commentText)
         {
